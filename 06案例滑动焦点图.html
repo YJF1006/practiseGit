@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin:0;
+			padding:0;
+		}
+		.box{
+			height: 170px;
+			width: 490px;
+			padding:5px;
+			border:1px solid #ccc;
+			margin:100px auto;
+		}
+		.inner{
+			height: 170px;
+			width: 490px;
+			position: relative;
+			overflow: hidden;
+
+		}
+		ul{
+			width:600%;
+			list-style: none;
+			position: absolute;
+			left:0px;
+		}
+		li{
+			float:left;
+		}
+		.square{
+			position: absolute;
+			right:10px;
+			bottom:10px;
+		}
+		span{
+			display:inline-block;
+			width: 16px;
+			height: 16px;
+			border:1px solid #ccc;
+			text-align: center;
+			line-height: 16px;
+			background: #fff;
+			color:#000;
+			margin:5px;
+			cursor: pointer;
+		}
+		.light{
+			background: darkorange;
+			color:#fff;
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		<div class="inner" id="inner">
+			<ul>
+				<li><img src="images/01.jpg" ></li>
+				<li><img src="images/02.jpg" ></li>
+				<li><img src="images/03.jpg" ></li>
+				<li><img src="images/04.jpg" ></li>
+				<li><img src="images/05.jpg" ></li>
+			</ul>
+
+			<div class="square">
+				<span>1</span>
+				<span>2</span>
+				<span>3</span>
+				<span>4</span>
+				<span>5</span>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	//需求：鼠标放在小方块上面，上面的图片（ul向左移动指定个数个图片的宽度）
+	//思路:绑定事件   点亮盒子    移动ul
+	//步骤：
+	//1.获取事件源和相关事件
+	//2.绑定事件和书写事件驱动程序（for循坏绑定）
+	//3.点亮盒子（排他思想）
+	//4.移动ul（向左移动，给定目标为负值，放在第n个小方块上想左移动n-1图片的宽度）
+	
+
+	//1.获取事件源和相关事件
+	var inner=document.getElementById("inner")
+	var imgWidth=inner.offsetWidth;
+	var ul=inner.children[0];
+	var square=inner.children[1];
+	var spanArr=square.children;
+
+	//2.绑定事件和书写事件驱动程序（for循坏绑定）
+	for(i=0;i<spanArr.length;i++){
+		//属性绑定（自定义属性参数盒子的索引值）
+		spanArr[i].index=i;  //绑定的是索引值所以不用-1
+		spanArr[i].onmouseover=function(){
+		//3.点亮盒子（排他思想）
+			for( var j=0;j<spanArr.length;j++){
+				spanArr[j].className="";
+			}
+			this.className="light";
+		//4.移动ul（向左移动，给定目标为负值，放在第n个小方块上想左移动n-1图片的宽度）
+			animate(ul,-this.index*imgWidth)
+		}
+	
+	}
+
+
+	function animate(ele,target){
+ 		clearInterval(ele.timer)
+
+ 		//我们要求盒子既能向前又能向后，那么我们的步长就应该有正有负
+ 		//目标值如果小于当前值取负，目标值大于当前值取负
+ 		var speed=target>ele.offsetLeft? 10:-10
+ 		ele.timer=setInterval(fun,30)
+ 		function fun(){
+ 			//在执行之前就获取当前值和目标值之差
+ 			var val=target-ele.offsetLeft;
+
+ 			ele.style.left=ele.offsetLeft+speed+"px";
+
+ 			//目标值和当前值小于步长，就不能再前进了 
+ 			//因为步长有正有负所以要转换成绝对值
+ 			if(Math.abs(val)===Math.abs(speed)){
+ 				ele.style.left=target+"px";
+ 				clearInterval(ele.timer)
+ 			}
+
+
+ 		}
+ 	}
+	</script>
+</body>
+</html>
